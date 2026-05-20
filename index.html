@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marc Bassols — Video Editor · Motion Designer · Compositor</title>
+  <meta name="description" content="Marc Bassols Moutinho — Video Editor, Motion Designer & Compositor based in Barcelona." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&family=Syne:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #0c0b09;
+      --bg2:    #111009;
+      --bg3:    #181610;
+      --bg4:    #1e1b13;
+      --surface: rgba(255,255,255,0.03);
+      --border:  rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.04);
+      --ink:    #f5f0e8;
+      --ink2:   #c8c0b0;
+      --mid:    #8a8278;
+      --muted:  #4a4640;
+      --accent: #d4a853;
+      --accent2:#b8893a;
+      --accent3:#f0c878;
+      --green:  #4a7c59;
+      --font-display: 'Bodoni Moda', Georgia, serif;
+      --font-ui: 'Syne', sans-serif;
+      --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+    /* ═══════════════════ NAV ═══════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.8rem 5rem;
+      transition: all 0.5s var(--ease);
+    }
+    nav.scrolled {
+      background: rgba(12,11,9,0.94);
+      backdrop-filter: blur(24px);
+      padding: 1rem 5rem;
+      border-bottom: 1px solid var(--border2);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--ink); text-decoration: none; letter-spacing: 0.01em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-center { display: flex; gap: 2.8rem; list-style: none; align-items: center; }
+    .nav-center a {
+      color: var(--mid); text-decoration: none;
+      font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-center a:hover { color: var(--ink); }
+    .nav-right { display: flex; align-items: center; gap: 1.2rem; }
+
+    /* LANG SWITCHER */
+    .lang-switcher {
+      display: flex; gap: 0; border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .lang-btn {
+      background: transparent; border: none; cursor: pointer;
+      padding: 0.4rem 0.85rem;
+      font-family: var(--font-ui); font-size: 0.68rem;
+      font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid); transition: all 0.25s;
+      border-right: 1px solid var(--border);
+    }
+    .lang-btn:last-child { border-right: none; }
+    .lang-btn.active { background: var(--accent); color: var(--bg); }
+    .lang-btn:not(.active):hover { color: var(--ink); background: var(--surface); }
+
+    .nav-cta {
+      background: var(--accent); color: var(--bg);
+      padding: 0.5rem 1.4rem;
+      font-family: var(--font-ui); font-size: 0.72rem;
+      font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background 0.3s;
+    }
+    .nav-cta:hover { background: var(--accent3); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
+    .hamburger span { width: 22px; height: 1.5px; background: var(--ink); display: block; transition: 0.3s; }
+
+    .mobile-nav {
+      display: none; position: fixed; inset: 0;
+      background: var(--bg2); z-index: 300;
+      flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a { font-family: var(--font-display); font-size: 2.8rem; font-weight: 600; color: var(--ink); text-decoration: none; }
+    .mobile-nav a:hover { color: var(--accent); }
+    .mob-lang { display: flex; gap: 1rem; margin-top: 1rem; }
+    .mob-lang button {
+      background: none; border: 1px solid var(--border); color: var(--mid);
+      padding: 0.4rem 1rem; font-family: var(--font-ui); font-size: 0.75rem;
+      font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+    }
+    .mob-lang button.active { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    .mobile-close { position: absolute; top: 1.8rem; right: 2.5rem; background: none; border: none; color: var(--mid); font-size: 1.4rem; cursor: pointer; }
+
+    /* ═══════════════════ HERO ═══════════════════ */
+    #hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: flex-end; padding: 0 5rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-noise {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.6;
+    }
+    .hero-glow {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 55% at 75% 25%, rgba(212,168,83,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 15% 75%, rgba(212,168,83,0.05) 0%, transparent 55%);
+    }
+    .hero-line-deco {
+      position: absolute; top: 0; right: 12rem; width: 1px; height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(212,168,83,0.15) 30%, rgba(212,168,83,0.08) 70%, transparent);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      position: relative; z-index: 2;
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 0.9s 0.3s var(--ease) forwards;
+    }
+    .hero-eyebrow::before { content:''; width:30px; height:1px; background:var(--accent); }
+    .hero-h1 {
+      position: relative; z-index: 2;
+      font-family: var(--font-display);
+      font-size: clamp(4.5rem, 11vw, 12rem);
+      font-weight: 700; line-height: 0.88;
+      letter-spacing: -0.02em;
+      margin-bottom: 4rem;
+      opacity: 0; animation: fadeUp 1s 0.45s var(--ease) forwards;
+    }
+    .hero-h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+    .hero-bottom {
+      position: relative; z-index: 2;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      flex-wrap: wrap; gap: 2rem;
+      opacity: 0; animation: fadeUp 0.9s 0.7s var(--ease) forwards;
+    }
+    .hero-desc { font-size: 1.05rem; color: var(--mid); max-width: 380px; line-height: 1.9; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-gold {
+      background: var(--accent); color: var(--bg);
+      padding: 0.95rem 2.2rem; font-family: var(--font-ui);
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      border: none; cursor: pointer; text-decoration: none; display: inline-block;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-gold:hover { background: var(--accent3); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--ink);
+      padding: 0.95rem 2.2rem; font-family: var(--font-ui);
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      border: 1px solid var(--border); cursor: pointer; text-decoration: none; display: inline-block;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .hero-status {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.75rem; color: var(--mid); letter-spacing: 0.06em;
+    }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #4a9960;
+      box-shadow: 0 0 8px rgba(74,153,96,0.6);
+      animation: blink 2.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: var(--muted); font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
+      opacity: 0; animation: fadeIn 1s 1.5s forwards;
+    }
+    .scroll-pulse { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollAnim 2s ease infinite; }
+    @keyframes scrollAnim { 0%,100%{transform:scaleY(1);opacity:1} 50%{transform:scaleY(0.4);opacity:0.3} }
+
+    /* ═══════════════════ SECTIONS COMMON ═══════════════════ */
+    section { padding: 9rem 5rem; }
+    .s-label {
+      font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .s-label::after { content:''; width:28px; height:1px; background:var(--accent); }
+    .s-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 600; line-height: 1.0;
+    }
+    .s-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1{transition-delay:0.12s} .d2{transition-delay:0.22s} .d3{transition-delay:0.32s} .d4{transition-delay:0.44s}
+
+    /* ═══════════════════ ABOUT ═══════════════════ */
+    #about { background: var(--bg2); }
+    .about-wrap { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.1fr; gap: 8rem; align-items: center; }
+    .about-img-side { position: relative; }
+    .about-img { aspect-ratio: 3/4; overflow: hidden; background: var(--bg3); }
+    .about-img img { width:100%; height:100%; object-fit:cover; filter:grayscale(20%); transition:filter 0.6s; }
+    .about-img:hover img { filter:grayscale(0%); }
+    .about-badge {
+      position: absolute; bottom: 2rem; left: 0;
+      background: var(--bg); padding: 1rem 1.4rem;
+      border-left: 2px solid var(--accent);
+    }
+    .about-badge-role { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.2rem; }
+    .about-badge-name { font-family: var(--font-display); font-size: 1rem; font-weight: 600; }
+    .about-body { font-size: 1.1rem; color: var(--ink2); line-height: 1.95; margin: 2rem 0; }
+    .about-body strong { color: var(--ink); font-weight: 500; }
+    .about-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2.2rem; }
+    .chip {
+      padding: 0.38rem 1rem; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      border: 1px solid var(--border); color: var(--mid);
+      transition: all 0.3s;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(212,168,83,0.06); }
+    .about-contact { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border2); font-size: 0.85rem; color: var(--mid); }
+    .about-contact a { color: var(--accent); text-decoration: none; }
+
+    /* ═══════════════════ CLIENTS ═══════════════════ */
+    #clients { background: var(--bg); padding: 7rem 5rem; }
+    .clients-inner { max-width: 1300px; margin: 0 auto; }
+    .clients-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; flex-wrap: wrap; gap: 1.5rem; }
+    .clients-header .s-title { font-size: clamp(2.2rem, 4vw, 3.8rem); }
+    .clients-note { font-size: 0.82rem; color: var(--mid); max-width: 260px; line-height: 1.7; }
+
+    /* MARQUEE-STYLE HORIZONTAL SCROLL */
+    .clients-track-wrap {
+      overflow: hidden; position: relative;
+      border-top: 1px solid var(--border2);
+      border-bottom: 1px solid var(--border2);
+      padding: 3rem 0;
+    }
+    .clients-track-wrap::before, .clients-track-wrap::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2; pointer-events: none;
+    }
+    .clients-track-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+    .clients-track-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+
+    .clients-track {
+      display: flex; gap: 0; align-items: stretch;
+      animation: marquee 28s linear infinite;
+      width: max-content;
+    }
+    .clients-track:hover { animation-play-state: paused; }
+
+    @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    .client-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 0 4rem; position: relative; cursor: default;
+      border-right: 1px solid var(--border2);
+      min-width: 220px; gap: 0.5rem;
+      transition: background 0.3s;
+    }
+    .client-item:hover { background: rgba(212,168,83,0.04); }
+    .client-num {
+      font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); font-family: var(--font-ui);
+    }
+    .client-name-big {
+      font-family: var(--font-display);
+      font-size: 1.7rem; font-weight: 700;
+      color: var(--mid); letter-spacing: 0.02em;
+      white-space: nowrap;
+      transition: color 0.3s;
+    }
+    .client-item:hover .client-name-big { color: var(--ink); }
+    .client-sector {
+      font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ═══════════════════ SHOWREELS ═══════════════════ */
+    #showreels { background: var(--bg2); }
+    .showreels-inner { max-width: 1300px; margin: 0 auto; }
+    .reel-block { margin-bottom: 5rem; }
+    .reel-block:last-child { margin-bottom: 0; }
+    .reel-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.8rem; flex-wrap: wrap; gap: 1.5rem; }
+    .reel-h { font-family: var(--font-display); font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 600; }
+    .reel-h em { font-style: italic; font-weight: 400; color: var(--accent); }
+    .reel-desc { font-size: 0.88rem; color: var(--mid); max-width: 420px; line-height: 1.75; }
+    .reel-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .reel-tag { padding: 0.25rem 0.75rem; border: 1px solid var(--border); font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .vimeo-frame { position: relative; width: 100%; padding-bottom: 56.25%; background: #060504; }
+    .vimeo-frame iframe { position: absolute; top:0; left:0; width:100%; height:100%; border:none; }
+    .reel-sep { width: 100%; height: 1px; background: var(--border2); margin: 4.5rem 0; }
+
+    /* ═══════════════════ PROJECTS ═══════════════════ */
+    #projects { background: var(--bg); }
+    .projects-inner { max-width: 1300px; margin: 0 auto; }
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 4rem; }
+    .p-card { position: relative; overflow: hidden; background: var(--bg3); aspect-ratio: 4/3; cursor: pointer; }
+    .p-card.wide { grid-column: span 2; }
+    .p-card img { width:100%; height:100%; object-fit:cover; transition: transform 0.7s var(--ease), filter 0.5s; filter: brightness(0.85); }
+    .p-card:hover img { transform: scale(1.07); filter: brightness(0.55); }
+    .p-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(12,11,9,0.92) 0%, transparent 55%);
+      padding: 1.8rem; display: flex; flex-direction: column; justify-content: flex-end;
+      transition: background 0.4s;
+    }
+    .p-card:hover .p-overlay { background: linear-gradient(to top, rgba(12,11,9,0.97) 0%, rgba(12,11,9,0.25) 60%); }
+    .p-cat { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+    .p-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
+    .p-desc { font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.65; max-height:0; overflow:hidden; transition: max-height 0.4s var(--ease), margin 0.3s; }
+    .p-card:hover .p-desc { max-height: 80px; margin-top: 0.6rem; }
+    .p-link {
+      position: absolute; top: 1.3rem; right: 1.3rem;
+      width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; color: white;
+      opacity: 0; transform: scale(0.7); transition: 0.3s;
+      text-decoration: none;
+    }
+    .p-card:hover .p-link { opacity: 1; transform: scale(1); }
+    .ai-badge {
+      position: absolute; top: 1.3rem; left: 1.3rem;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: white; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; font-family: var(--font-ui); font-weight: 600;
+    }
+
+    /* ═══════════════════ EXPERIENCE ═══════════════════ */
+    #experience { background: var(--bg2); }
+    .exp-inner { max-width: 1000px; margin: 0 auto; }
+    .timeline { margin-top: 4.5rem; }
+    .tl-item {
+      display: grid; grid-template-columns: 180px 1fr; gap: 3.5rem;
+      padding-bottom: 4rem; border-bottom: 1px solid var(--border2); margin-bottom: 4rem;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .tl-item.visible { opacity: 1; transform: translateY(0); }
+    .tl-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    .tl-date { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.06em; line-height: 1.7; padding-top: 0.3rem; }
+    .tl-co { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+    .tl-role { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; margin-bottom: 0.3rem; line-height: 1.1; }
+    .tl-loc { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; }
+    .tl-body { font-size: 0.92rem; color: var(--mid); line-height: 1.85; }
+    .tl-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.2rem; }
+    .tl-chip { padding: 0.22rem 0.7rem; border: 1px solid var(--border2); font-size: 0.65rem; letter-spacing: 0.08em; color: var(--muted); }
+
+    /* ═══════════════════ SERVICES ═══════════════════ */
+    #services { background: var(--bg); }
+    .services-inner { max-width: 1200px; margin: 0 auto; }
+    .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border2); margin-top: 4rem; }
+    .sv-cell {
+      padding: 2.8rem 2.2rem; border-right: 1px solid var(--border2); border-bottom: 1px solid var(--border2);
+      transition: background 0.3s; position: relative; overflow: hidden;
+    }
+    .sv-cell::before { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--accent); transition:width 0.4s var(--ease); }
+    .sv-cell:hover { background: var(--bg2); }
+    .sv-cell:hover::before { width: 100%; }
+    .sv-cell:nth-child(4n) { border-right: none; }
+    .sv-cell:nth-last-child(-n+4) { border-bottom: none; }
+    .sv-n { font-family: var(--font-display); font-size: 0.95rem; color: var(--muted); margin-bottom: 1.2rem; }
+    .sv-name { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; margin-bottom: 0.6rem; line-height: 1.2; }
+    .sv-blurb { font-size: 0.82rem; color: var(--mid); line-height: 1.75; }
+
+    /* ═══════════════════ SOFTWARE ═══════════════════ */
+    #software { background: var(--bg2); padding: 5rem 5rem; }
+    .sw-inner { max-width: 1100px; margin: 0 auto; }
+    .sw-grid { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2.5rem; }
+    .sw-pill {
+      padding: 0.65rem 1.5rem; border: 1px solid var(--border);
+      font-size: 0.82rem; letter-spacing: 0.06em; color: var(--mid);
+      transition: all 0.3s; background: var(--bg);
+    }
+    .sw-pill:hover { border-color: var(--accent); color: var(--accent); background: rgba(212,168,83,0.05); }
+
+    /* ═══════════════════ CONTACT ═══════════════════ */
+    #contact { background: var(--bg2); }
+    .contact-wrap { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.1fr; gap: 7rem; align-items: start; }
+    .contact-tagline { font-size: 1.05rem; color: var(--mid); margin-top: 1.8rem; line-height: 1.85; max-width: 360px; }
+    .cinfo { margin-top: 3.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .ci-row { padding-bottom: 1.5rem; border-bottom: 1px solid var(--border2); }
+    .ci-row:last-child { border-bottom: none; }
+    .ci-lbl { font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+    .ci-val { font-size: 0.95rem; color: var(--ink); }
+    .ci-val a { color: var(--accent); text-decoration: none; }
+    .cform { display: flex; flex-direction: column; gap: 1.3rem; }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; }
+    .cf-g { display: flex; flex-direction: column; gap: 0.4rem; }
+    .cf-g label { font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .cf-g input, .cf-g select, .cf-g textarea {
+      background: var(--bg3); border: 1px solid var(--border2);
+      color: var(--ink); padding: 0.95rem 1.1rem;
+      font-family: var(--font-ui); font-size: 0.9rem; outline: none;
+      transition: border-color 0.3s; appearance: none;
+    }
+    .cf-g input:focus, .cf-g select:focus, .cf-g textarea:focus { border-color: var(--accent); }
+    .cf-g textarea { resize: vertical; min-height: 120px; }
+    .cf-g select option { background: var(--bg3); }
+    .form-ok {
+      display: none; padding: 3rem; border: 1px solid rgba(212,168,83,0.25);
+      text-align: center;
+    }
+    .form-ok .ok-icon { font-size: 2rem; color: var(--accent); margin-bottom: 1rem; }
+    .form-ok .ok-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .form-ok .ok-sub { font-size: 0.85rem; color: var(--mid); }
+
+    /* ═══════════════════ FOOTER ═══════════════════ */
+    footer {
+      background: var(--bg); border-top: 1px solid var(--border2);
+      padding: 2.5rem 5rem; display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .foot-brand { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--ink2); }
+    .foot-brand span { color: var(--accent); }
+    .foot-copy { font-size: 0.73rem; color: var(--muted); }
+    .foot-socials { display: flex; gap: 0.8rem; }
+    .foot-sl {
+      width: 36px; height: 36px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: var(--mid); font-size: 0.72rem; font-weight: 600;
+      transition: 0.3s;
+    }
+    .foot-sl:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ═══════════════════ ANIMATIONS ═══════════════════ */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+
+    /* ═══════════════════ RESPONSIVE ═══════════════════ */
+    @media (max-width: 1100px) {
+      nav { padding: 1.4rem 2.5rem; }
+      nav.scrolled { padding: 0.9rem 2.5rem; }
+      .nav-center, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      #hero { padding: 0 2.5rem 4rem; }
+      section { padding: 6rem 2.5rem; }
+      #clients, #software { padding: 5rem 2.5rem; }
+      .about-wrap { grid-template-columns: 1fr; gap: 3rem; }
+      .about-img-side { display: none; }
+      .projects-grid { grid-template-columns: 1fr 1fr; }
+      .p-card.wide { grid-column: span 1; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .sv-cell:nth-child(4n) { border-right: 1px solid var(--border2); }
+      .sv-cell:nth-child(2n) { border-right: none; }
+      .sv-cell:nth-last-child(-n+4) { border-bottom: 1px solid var(--border2); }
+      .sv-cell:nth-last-child(-n+2) { border-bottom: none; }
+      .tl-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .contact-wrap { grid-template-columns: 1fr; gap: 3.5rem; }
+      footer { padding: 2rem 2.5rem; }
+    }
+    @media (max-width: 640px) {
+      .projects-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .sv-cell { border-right: none; }
+      .sv-cell:nth-last-child(-n+2) { border-bottom: 1px solid var(--border2); }
+      .sv-cell:last-child { border-bottom: none; }
+      .cf-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">Marc Bassols<span>.</span></a>
+    <ul class="nav-center">
+      <li><a href="#about" data-i18n="nav_about">About</a></li>
+      <li><a href="#showreels" data-i18n="nav_reels">Reels</a></li>
+      <li><a href="#projects" data-i18n="nav_work">Work</a></li>
+      <li><a href="#experience" data-i18n="nav_exp">Experience</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+      <a href="#contact" class="nav-cta" data-i18n="nav_contact">Contact</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-close" id="mobileClose">✕</button>
+    <a href="#about" onclick="closeMob()" data-i18n="nav_about">About</a>
+    <a href="#showreels" onclick="closeMob()" data-i18n="nav_reels">Reels</a>
+    <a href="#projects" onclick="closeMob()" data-i18n="nav_work">Work</a>
+    <a href="#experience" onclick="closeMob()" data-i18n="nav_exp">Experience</a>
+    <a href="#contact" onclick="closeMob()" data-i18n="nav_contact">Contact</a>
+    <div class="mob-lang">
+      <button class="active" onclick="setLang('en');closeMob()" id="mobLangEn">EN</button>
+      <button onclick="setLang('es');closeMob()" id="mobLangEs">ES</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-noise"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-line-deco"></div>
+    <div class="hero-eyebrow" data-i18n="hero_eyebrow">Barcelona · Spain · Available for projects</div>
+    <h1 class="hero-h1">Crafting<br><em>cinematic</em><br>digital<br>experiences.</h1>
+    <div class="hero-bottom">
+      <div>
+        <p class="hero-desc" data-i18n="hero_desc">Video Editor · Motion Designer · Compositor<br>Branded content & audiovisual storytelling at agency level.</p>
+        <div class="hero-btns" style="margin-top:2rem">
+          <a href="#showreels" class="btn-gold" data-i18n="hero_btn1">View Reels</a>
+          <a href="#contact" class="btn-outline" data-i18n="hero_btn2">Contact Me</a>
+        </div>
+      </div>
+      <div class="hero-status">
+        <div class="status-dot"></div>
+        <span data-i18n="hero_status">Currently at Apple Tree · Barcelona</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-pulse"></div>
+      <span data-i18n="hero_scroll">Scroll</span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-wrap">
+      <div class="about-img-side reveal">
+        <div class="about-img">
+          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&q=80&fit=crop" alt="Marc Bassols" />
+        </div>
+        <div class="about-badge">
+          <div class="about-badge-role" data-i18n="about_badge_role">Video Editor · Compositor</div>
+          <div class="about-badge-name">Marc Bassols</div>
+        </div>
+      </div>
+      <div>
+        <div class="s-label reveal" data-i18n="about_label">About</div>
+        <h2 class="s-title reveal d1" data-i18n="about_title">The craft<br>behind the <em>frame</em></h2>
+        <p class="about-body reveal d2" data-i18n="about_body">
+          I'm <strong>Marc Bassols Moutinho</strong>, a versatile video editor and graphic designer specialized in <strong>audiovisual storytelling, motion graphics, compositing and branded content</strong>.<br><br>
+          Experienced in developing visual campaigns, social media content and postproduction workflows for agencies and major brands — combining creativity, editing, design and cinematic language into engaging digital experiences.<br><br>
+          Trained at <strong>FX Barcelona Film School</strong> in Postproduction & Compositing, with deep focus on VFX, Nuke compositing and cinematic techniques. Passionate about <strong>visual storytelling, modern aesthetics and AI-assisted production</strong>.
+        </p>
+        <div class="about-chips reveal d3">
+          <span class="chip">Video Editing</span><span class="chip">Motion Graphics</span>
+          <span class="chip">Compositing</span><span class="chip">VFX</span>
+          <span class="chip">Color Grading</span><span class="chip">Branded Content</span>
+          <span class="chip">Matte Painting</span><span class="chip">Camera Tracking</span>
+          <span class="chip">Chroma Key</span><span class="chip">AI Workflows</span>
+          <span class="chip">Creative Direction</span>
+        </div>
+        <div class="about-contact reveal d4">
+          📍 Barcelona · <a href="mailto:marcvfx03@gmail.com">marcvfx03@gmail.com</a> · <a href="https://www.linkedin.com/in/marc-bassols-moutinho/" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENTS -->
+  <section id="clients" style="padding:7rem 5rem">
+    <div class="clients-inner">
+      <div class="clients-header reveal">
+        <div>
+          <div class="s-label" data-i18n="clients_label">Selected Clients</div>
+          <h2 class="s-title" style="font-size:clamp(2.2rem,4vw,3.8rem)" data-i18n="clients_title">Brands I've<br>worked <em>with</em></h2>
+        </div>
+        <p class="clients-note reveal d1" data-i18n="clients_note">Agency-level campaigns for global and national brands across media, sports, lifestyle and culture.</p>
+      </div>
+      <div class="clients-track-wrap reveal d2">
+        <div class="clients-track" id="clientsTrack">
+          <!-- First set -->
+          <div class="client-item"><div class="client-num">01</div><div class="client-name-big">Pepsi</div><div class="client-sector">Beverage · Global</div></div>
+          <div class="client-item"><div class="client-num">02</div><div class="client-name-big">MotoGP</div><div class="client-sector">Motorsport · Global</div></div>
+          <div class="client-item"><div class="client-num">03</div><div class="client-name-big">CaixaBank</div><div class="client-sector">Finance · Spain</div></div>
+          <div class="client-item"><div class="client-num">04</div><div class="client-name-big">TV3</div><div class="client-sector">Media · Catalonia</div></div>
+          <div class="client-item"><div class="client-num">05</div><div class="client-name-big">Cocunat</div><div class="client-sector">Beauty · Lifestyle</div></div>
+          <div class="client-item"><div class="client-num">06</div><div class="client-name-big">Kelme</div><div class="client-sector">Sports · Fashion</div></div>
+          <div class="client-item"><div class="client-num">07</div><div class="client-name-big">Museu Picasso</div><div class="client-sector">Culture · Barcelona</div></div>
+          <div class="client-item"><div class="client-num">08</div><div class="client-name-big">GF Hoteles</div><div class="client-sector">Hospitality · Travel</div></div>
+          <div class="client-item"><div class="client-num">09</div><div class="client-name-big">PcComponentes</div><div class="client-sector">Tech · E-commerce</div></div>
+          <!-- Duplicate for seamless loop -->
+          <div class="client-item"><div class="client-num">01</div><div class="client-name-big">Pepsi</div><div class="client-sector">Beverage · Global</div></div>
+          <div class="client-item"><div class="client-num">02</div><div class="client-name-big">MotoGP</div><div class="client-sector">Motorsport · Global</div></div>
+          <div class="client-item"><div class="client-num">03</div><div class="client-name-big">CaixaBank</div><div class="client-sector">Finance · Spain</div></div>
+          <div class="client-item"><div class="client-num">04</div><div class="client-name-big">TV3</div><div class="client-sector">Media · Catalonia</div></div>
+          <div class="client-item"><div class="client-num">05</div><div class="client-name-big">Cocunat</div><div class="client-sector">Beauty · Lifestyle</div></div>
+          <div class="client-item"><div class="client-num">06</div><div class="client-name-big">Kelme</div><div class="client-sector">Sports · Fashion</div></div>
+          <div class="client-item"><div class="client-num">07</div><div class="client-name-big">Museu Picasso</div><div class="client-sector">Culture · Barcelona</div></div>
+          <div class="client-item"><div class="client-num">08</div><div class="client-name-big">GF Hoteles</div><div class="client-sector">Hospitality · Travel</div></div>
+          <div class="client-item"><div class="client-num">09</div><div class="client-name-big">PcComponentes</div><div class="client-sector">Tech · E-commerce</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWREELS -->
+  <section id="showreels">
+    <div class="showreels-inner">
+      <div class="s-label reveal" data-i18n="reels_label">Showreels</div>
+      <h2 class="s-title reveal d1" data-i18n="reels_title">Real work.<br><em>Real clients.</em></h2>
+      <div style="margin-top:4rem">
+        <div class="reel-block reveal">
+          <div class="reel-header">
+            <div>
+              <h3 class="reel-h" data-i18n="reel1_title">Video Editing <em>Reel 2025</em></h3>
+              <p class="reel-desc" data-i18n="reel1_desc">Branded content, motion graphics, social formats, color grading and commercial editing for agencies and global brands.</p>
+              <div class="reel-tags">
+                <span class="reel-tag">Branded Content</span><span class="reel-tag">Motion Graphics</span>
+                <span class="reel-tag">Color Grading</span><span class="reel-tag">Social Formats</span><span class="reel-tag">3D Integration</span>
+              </div>
+            </div>
+          </div>
+          <div class="vimeo-frame">
+            <iframe src="https://player.vimeo.com/video/1088556983?badge=0&autopause=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen title="Video Editing Reel 2025 — Marc Bassols"></iframe>
+          </div>
+        </div>
+        <div class="reel-sep"></div>
+        <div class="reel-block reveal">
+          <div class="reel-header">
+            <div>
+              <h3 class="reel-h" data-i18n="reel2_title">VFX &amp; Compositing <em>Portfolio</em></h3>
+              <p class="reel-desc" data-i18n="reel2_desc">Nuke compositing, matte painting, set extensions, chroma keying, camera tracking, cleanup and advanced postproduction workflows.</p>
+              <div class="reel-tags">
+                <span class="reel-tag">Nuke</span><span class="reel-tag">Matte Painting</span>
+                <span class="reel-tag">Chroma Key</span><span class="reel-tag">Camera Tracking</span><span class="reel-tag">VFX Cleanup</span>
+              </div>
+            </div>
+          </div>
+          <div class="vimeo-frame">
+            <iframe src="https://player.vimeo.com/video/1083862724?badge=0&autopause=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowfullscreen title="VFX & Compositing Portfolio — Marc Bassols"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="projects-inner">
+      <div class="s-label reveal" data-i18n="proj_label">Featured Projects</div>
+      <h2 class="s-title reveal d1" data-i18n="proj_title">Selected<br><em>campaigns</em></h2>
+      <div class="projects-grid">
+        <div class="p-card wide reveal">
+          <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=900&q=80&fit=crop" alt="Pepsi" />
+          <div class="p-overlay">
+            <div class="p-cat">Pepsi · Social Campaign · TikTok</div>
+            <div class="p-title" data-i18n="proj1_title">Pepsi — Dynamic Branded TikTok</div>
+            <div class="p-desc" data-i18n="proj1_desc">Energetic branded campaign with dynamic editing, motion graphics and social-first storytelling for Pepsi España.</div>
+          </div>
+          <a href="https://www.tiktok.com/@pepsi_es/video/7546226892228119830" target="_blank" class="p-link">↗</a>
+        </div>
+        <div class="p-card reveal d1">
+          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80&fit=crop" alt="GF Hoteles" />
+          <div class="p-overlay">
+            <div class="p-cat">GF Hoteles · Travel · TikTok</div>
+            <div class="p-title" data-i18n="proj2_title">GF Hoteles — Travel Campaign</div>
+            <div class="p-desc" data-i18n="proj2_desc">Travel and hospitality storytelling optimized for social engagement and brand identity.</div>
+          </div>
+          <a href="https://www.tiktok.com/@gfhoteles/video/7560389185501252886" target="_blank" class="p-link">↗</a>
+        </div>
+        <div class="p-card reveal">
+          <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&q=80&fit=crop" alt="Kelme" />
+          <div class="p-overlay">
+            <div class="p-cat">Kelme · Sports · TikTok</div>
+            <div class="p-title" data-i18n="proj3_title">Kelme — Sports Branding</div>
+            <div class="p-desc" data-i18n="proj3_desc">High-energy sports campaign with dynamic editing and cinematic product storytelling.</div>
+          </div>
+          <a href="https://www.tiktok.com/@kelmesports/video/7572263094605417750" target="_blank" class="p-link">↗</a>
+        </div>
+        <div class="p-card reveal d1">
+          <img src="https://images.unsplash.com/photo-1541367777708-7905fe3296c0?w=600&q=80&fit=crop" alt="Museu Picasso" />
+          <div class="p-overlay">
+            <div class="p-cat">Museu Picasso · Arts · Instagram</div>
+            <div class="p-title" data-i18n="proj4_title">Museu Picasso — Cultural Campaign</div>
+            <div class="p-desc" data-i18n="proj4_desc">Elegant museum-focused storytelling with artistic direction and cinematic pacing.</div>
+          </div>
+          <a href="https://www.instagram.com/p/DT-g6fbgCoJ/" target="_blank" class="p-link">↗</a>
+        </div>
+        <div class="p-card reveal d2">
+          <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80&fit=crop" alt="Cocunat" />
+          <div class="p-overlay">
+            <div class="p-cat">Cocunat · Beauty · Instagram</div>
+            <div class="p-title" data-i18n="proj5_title">Cocunat — Premium Beauty</div>
+            <div class="p-desc" data-i18n="proj5_desc">Premium beauty and lifestyle branded content with modern product-focused visuals.</div>
+          </div>
+          <a href="https://www.instagram.com/p/DOVTv_tjMvP/" target="_blank" class="p-link">↗</a>
+        </div>
+        <div class="p-card wide reveal">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&q=80&fit=crop" alt="AI Campaign" />
+          <div class="p-overlay">
+            <div class="p-cat">ICDQ · AI-Assisted · Instagram</div>
+            <div class="p-title" data-i18n="proj6_title">ICDQ — AI Generated Campaign</div>
+            <div class="p-desc" data-i18n="proj6_desc">Experimental AI-assisted production combining prompting workflows, cinematic AI visuals and advanced postproduction for innovative digital storytelling.</div>
+          </div>
+          <div class="ai-badge">✦ <span data-i18n="ai_badge">Created with AI</span></div>
+          <a href="https://www.instagram.com/p/DSj_MzMiamo/" target="_blank" class="p-link">↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="exp-inner">
+      <div class="s-label reveal" data-i18n="exp_label">Career</div>
+      <h2 class="s-title reveal d1" data-i18n="exp_title">Experience &amp;<br><em>Education</em></h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date">April 2026 — <span data-i18n="present">Present</span></div>
+          <div>
+            <div class="tl-co">Apple Tree</div>
+            <div class="tl-role">JR. Designer & Video Editor</div>
+            <div class="tl-loc">Barcelona · Hybrid</div>
+            <div class="tl-body" data-i18n="exp1_body">Ideation, production and postproduction of social-first audiovisual content. Development of campaigns for global brands, motion graphics and branded storytelling for Instagram, TikTok and YouTube. AI-assisted creative workflows.</div>
+            <div class="tl-chips"><span class="tl-chip">Video Editing</span><span class="tl-chip">Motion Graphics</span><span class="tl-chip">Branded Content</span><span class="tl-chip">AI Workflows</span><span class="tl-chip">Social Media</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Aug 2025 — Feb 2026</div>
+          <div>
+            <div class="tl-co">Adsmurai</div>
+            <div class="tl-role">Editor & Motion Graphics</div>
+            <div class="tl-loc">Barcelona · Hybrid</div>
+            <div class="tl-body" data-i18n="exp2_body">Editing and adaptation of branded content, motion graphics production, creative social media editing, shooting support and agency-level fast-paced workflows.</div>
+            <div class="tl-chips"><span class="tl-chip">Branded Editing</span><span class="tl-chip">Motion Graphics</span><span class="tl-chip">Production</span><span class="tl-chip">Brand Guidelines</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Sep 2024 — Jan 2025</div>
+          <div>
+            <div class="tl-co">PayFit España</div>
+            <div class="tl-role">Audiovisual Content Trainee</div>
+            <div class="tl-loc">Barcelona · On-site</div>
+            <div class="tl-body" data-i18n="exp3_body">Corporate and promotional video editing, motion graphics and branded assets, educational video production for PayFit Academy and international English-speaking content creation.</div>
+            <div class="tl-chips"><span class="tl-chip">Corporate Video</span><span class="tl-chip">Motion Assets</span><span class="tl-chip">E-learning</span><span class="tl-chip">English Content</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2023 — 2025</div>
+          <div>
+            <div class="tl-co">FX Barcelona Film School</div>
+            <div class="tl-role" data-i18n="edu1_role">Master in Postproduction & Compositing</div>
+            <div class="tl-loc">Barcelona</div>
+            <div class="tl-body" data-i18n="edu1_body">Intensive training in compositing, VFX, cinematic storytelling and postproduction. Deep focus on Nuke, matte painting, camera tracking and professional postproduction pipelines.</div>
+            <div class="tl-chips"><span class="tl-chip">Nuke</span><span class="tl-chip">Compositing</span><span class="tl-chip">VFX</span><span class="tl-chip">Matte Painting</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2021 — 2023</div>
+          <div>
+            <div class="tl-co">FX Barcelona Film School</div>
+            <div class="tl-role" data-i18n="edu2_role">Higher Degree in Cinematography</div>
+            <div class="tl-loc">Barcelona</div>
+            <div class="tl-body" data-i18n="edu2_body">Professional formation in cinematography, camera operation, lighting and audiovisual production fundamentals. Foundation for a career in film and digital content creation.</div>
+            <div class="tl-chips"><span class="tl-chip">Cinematography</span><span class="tl-chip">Camera</span><span class="tl-chip">Lighting</span><span class="tl-chip">Production</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="services-inner">
+      <div class="s-label reveal" data-i18n="sv_label">What I Do</div>
+      <h2 class="s-title reveal d1" data-i18n="sv_title">Services</h2>
+      <div class="services-grid reveal d2">
+        <div class="sv-cell"><div class="sv-n">01</div><div class="sv-name" data-i18n="sv1_name">Video Editing</div><div class="sv-blurb" data-i18n="sv1_blurb">Cinematic post-production for branded content, commercials, social reels and narrative projects.</div></div>
+        <div class="sv-cell"><div class="sv-n">02</div><div class="sv-name" data-i18n="sv2_name">Motion Graphics</div><div class="sv-blurb" data-i18n="sv2_blurb">Dynamic animations, title sequences, lower thirds and visual effects for broadcast and digital.</div></div>
+        <div class="sv-cell"><div class="sv-n">03</div><div class="sv-name" data-i18n="sv3_name">Compositing</div><div class="sv-blurb" data-i18n="sv3_blurb">Advanced VFX in Nuke — matte painting, set extensions, chroma keying, cleanup and tracking.</div></div>
+        <div class="sv-cell"><div class="sv-n">04</div><div class="sv-name" data-i18n="sv4_name">Branded Content</div><div class="sv-blurb" data-i18n="sv4_blurb">End-to-end campaign production for brands — from concept to delivery across all digital platforms.</div></div>
+        <div class="sv-cell"><div class="sv-n">05</div><div class="sv-name" data-i18n="sv5_name">AI Creative Workflows</div><div class="sv-blurb" data-i18n="sv5_blurb">Hybrid AI-assisted production combining generative tools, prompting workflows and postproduction.</div></div>
+        <div class="sv-cell"><div class="sv-n">06</div><div class="sv-name" data-i18n="sv6_name">Digital Campaigns</div><div class="sv-blurb" data-i18n="sv6_blurb">Social-first content for Instagram, TikTok and YouTube — optimized for reach and brand impact.</div></div>
+        <div class="sv-cell"><div class="sv-n">07</div><div class="sv-name" data-i18n="sv7_name">Creative Direction</div><div class="sv-blurb" data-i18n="sv7_blurb">Visual concept development, moodboarding and creative strategy for campaigns and brand storytelling.</div></div>
+        <div class="sv-cell"><div class="sv-n">08</div><div class="sv-name" data-i18n="sv8_name">Cinematic Storytelling</div><div class="sv-blurb" data-i18n="sv8_blurb">Narrative-driven visual content that communicates with emotion, rhythm and cinematic precision.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOFTWARE -->
+  <section id="software" style="padding:5rem 5rem">
+    <div class="sw-inner">
+      <div class="s-label reveal" data-i18n="sw_label">Software &amp; Tools</div>
+      <div class="sw-grid reveal d1">
+        <span class="sw-pill">Adobe Premiere Pro</span><span class="sw-pill">After Effects</span>
+        <span class="sw-pill">DaVinci Resolve</span><span class="sw-pill">Nuke</span>
+        <span class="sw-pill">Photoshop</span><span class="sw-pill">Illustrator</span>
+        <span class="sw-pill">Figma</span><span class="sw-pill">Adobe Creative Suite</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-wrap">
+      <div>
+        <div class="s-label reveal" data-i18n="ct_label">Contact</div>
+        <h2 class="s-title reveal d1" data-i18n="ct_title">Let's create<br>visually <em>unforgettable</em><br>work.</h2>
+        <p class="contact-tagline reveal d2" data-i18n="ct_tagline">Available for freelance projects, agency collaborations and full-time opportunities. Based in Barcelona, open to remote.</p>
+        <div class="cinfo reveal d3">
+          <div class="ci-row"><div class="ci-lbl" data-i18n="ct_email_lbl">Email</div><div class="ci-val"><a href="mailto:marcvfx03@gmail.com">marcvfx03@gmail.com</a></div></div>
+          <div class="ci-row"><div class="ci-lbl" data-i18n="ct_loc_lbl">Location</div><div class="ci-val" data-i18n="ct_loc_val">Barcelona, Catalonia, Spain</div></div>
+          <div class="ci-row"><div class="ci-lbl" data-i18n="ct_current_lbl">Current</div><div class="ci-val">JR. Designer & Video Editor · Apple Tree</div></div>
+          <div class="ci-row"><div class="ci-lbl">LinkedIn</div><div class="ci-val"><a href="https://www.linkedin.com/in/marc-bassols-moutinho/" target="_blank">marc-bassols-moutinho</a></div></div>
+        </div>
+      </div>
+      <div class="reveal d2">
+        <div class="cform" id="cForm">
+          <div class="cf-row">
+            <div class="cf-g"><label data-i18n="f_name">Name</label><input type="text" /></div>
+            <div class="cf-g"><label data-i18n="f_email">Email</label><input type="email" /></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf-g"><label data-i18n="f_company">Company</label><input type="text" /></div>
+            <div class="cf-g">
+              <label data-i18n="f_budget">Budget</label>
+              <select>
+                <option value="" data-i18n="f_sel">Select range...</option>
+                <option>Under €500</option><option>€500 – €1,500</option>
+                <option>€1,500 – €5,000</option><option>€5,000 – €15,000</option><option>€15,000+</option>
+              </select>
+            </div>
+          </div>
+          <div class="cf-g">
+            <label data-i18n="f_type">Project Type</label>
+            <select>
+              <option value="" data-i18n="f_sel2">Select type...</option>
+              <option data-i18n="f_opt1">Video Editing</option><option data-i18n="f_opt2">Motion Graphics</option>
+              <option data-i18n="f_opt3">Compositing / VFX</option><option data-i18n="f_opt4">Branded Content</option>
+              <option data-i18n="f_opt5">Social Media Campaign</option><option data-i18n="f_opt6">AI Creative Workflow</option>
+              <option data-i18n="f_opt7">Creative Direction</option><option data-i18n="f_opt8">Other</option>
+            </select>
+          </div>
+          <div class="cf-g"><label data-i18n="f_msg">Message</label><textarea></textarea></div>
+          <button class="btn-gold" style="width:100%;font-size:0.78rem" onclick="handleSend(event)" data-i18n="f_send">Send Message →</button>
+        </div>
+        <div class="form-ok" id="formOk">
+          <div class="ok-icon">◈</div>
+          <div class="ok-title" data-i18n="ok_title">Message received.</div>
+          <div class="ok-sub" data-i18n="ok_sub">I'll be in touch shortly. Let's make something great.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-brand">Marc Bassols<span>.</span></div>
+    <div class="foot-copy">© 2025 Marc Bassols Moutinho · Barcelona</div>
+    <div class="foot-socials">
+      <a href="https://www.linkedin.com/in/marc-bassols-moutinho/" target="_blank" class="foot-sl">in</a>
+      <a href="https://vimeo.com/1088556983" target="_blank" class="foot-sl">Vi</a>
+      <a href="#" class="foot-sl">ig</a>
+      <a href="#" class="foot-sl">be</a>
+    </div>
+  </footer>
+
+  <script>
+    /* ═══════ TRANSLATIONS ═══════ */
+    const T = {
+      en: {
+        nav_about:"About", nav_reels:"Reels", nav_work:"Work", nav_exp:"Experience", nav_contact:"Contact",
+        hero_eyebrow:"Barcelona · Spain · Available for projects",
+        hero_desc:"Video Editor · Motion Designer · Compositor<br>Branded content & audiovisual storytelling at agency level.",
+        hero_btn1:"View Reels", hero_btn2:"Contact Me",
+        hero_status:"Currently at Apple Tree · Barcelona", hero_scroll:"Scroll",
+        about_label:"About", about_title:"The craft<br>behind the <em>frame</em>",
+        about_badge_role:"Video Editor · Compositor",
+        about_body:"I'm <strong>Marc Bassols Moutinho</strong>, a versatile video editor and graphic designer specialized in <strong>audiovisual storytelling, motion graphics, compositing and branded content</strong>.<br><br>Experienced in developing visual campaigns, social media content and postproduction workflows for agencies and major brands — combining creativity, editing, design and cinematic language into engaging digital experiences.<br><br>Trained at <strong>FX Barcelona Film School</strong> in Postproduction & Compositing, with deep focus on VFX, Nuke compositing and cinematic techniques. Passionate about <strong>visual storytelling, modern aesthetics and AI-assisted production</strong>.",
+        clients_label:"Selected Clients", clients_title:"Brands I've<br>worked <em>with</em>",
+        clients_note:"Agency-level campaigns for global and national brands across media, sports, lifestyle and culture.",
+        reels_label:"Showreels", reels_title:"Real work.<br><em>Real clients.</em>",
+        reel1_title:"Video Editing <em>Reel 2025</em>",
+        reel1_desc:"Branded content, motion graphics, social formats, color grading and commercial editing for agencies and global brands.",
+        reel2_title:"VFX &amp; Compositing <em>Portfolio</em>",
+        reel2_desc:"Nuke compositing, matte painting, set extensions, chroma keying, camera tracking, cleanup and advanced postproduction workflows.",
+        proj_label:"Featured Projects", proj_title:"Selected<br><em>campaigns</em>",
+        proj1_title:"Pepsi — Dynamic Branded TikTok", proj1_desc:"Energetic branded campaign with dynamic editing, motion graphics and social-first storytelling for Pepsi España.",
+        proj2_title:"GF Hoteles — Travel Campaign", proj2_desc:"Travel and hospitality storytelling optimized for social engagement and brand identity.",
+        proj3_title:"Kelme — Sports Branding", proj3_desc:"High-energy sports campaign with dynamic editing and cinematic product storytelling.",
+        proj4_title:"Museu Picasso — Cultural Campaign", proj4_desc:"Elegant museum-focused storytelling with artistic direction and cinematic pacing.",
+        proj5_title:"Cocunat — Premium Beauty", proj5_desc:"Premium beauty and lifestyle branded content with modern product-focused visuals.",
+        proj6_title:"ICDQ — AI Generated Campaign", proj6_desc:"Experimental AI-assisted production combining prompting workflows, cinematic AI visuals and advanced postproduction.",
+        ai_badge:"Created with AI",
+        exp_label:"Career", exp_title:"Experience &amp;<br><em>Education</em>", present:"Present",
+        exp1_body:"Ideation, production and postproduction of social-first audiovisual content. Development of campaigns for global brands, motion graphics and branded storytelling for Instagram, TikTok and YouTube. AI-assisted creative workflows.",
+        exp2_body:"Editing and adaptation of branded content, motion graphics production, creative social media editing, shooting support and agency-level fast-paced workflows.",
+        exp3_body:"Corporate and promotional video editing, motion graphics and branded assets, educational video production for PayFit Academy and international English-speaking content creation.",
+        edu1_role:"Master in Postproduction & Compositing",
+        edu1_body:"Intensive training in compositing, VFX, cinematic storytelling and postproduction. Deep focus on Nuke, matte painting, camera tracking and professional postproduction pipelines.",
+        edu2_role:"Higher Degree in Cinematography",
+        edu2_body:"Professional formation in cinematography, camera operation, lighting and audiovisual production fundamentals. Foundation for a career in film and digital content creation.",
+        sv_label:"What I Do", sv_title:"Services",
+        sv1_name:"Video Editing", sv1_blurb:"Cinematic post-production for branded content, commercials, social reels and narrative projects.",
+        sv2_name:"Motion Graphics", sv2_blurb:"Dynamic animations, title sequences, lower thirds and visual effects for broadcast and digital.",
+        sv3_name:"Compositing", sv3_blurb:"Advanced VFX in Nuke — matte painting, set extensions, chroma keying, cleanup and tracking.",
+        sv4_name:"Branded Content", sv4_blurb:"End-to-end campaign production for brands — from concept to delivery across all digital platforms.",
+        sv5_name:"AI Creative Workflows", sv5_blurb:"Hybrid AI-assisted production combining generative tools, prompting workflows and postproduction.",
+        sv6_name:"Digital Campaigns", sv6_blurb:"Social-first content for Instagram, TikTok and YouTube — optimized for reach and brand impact.",
+        sv7_name:"Creative Direction", sv7_blurb:"Visual concept development, moodboarding and creative strategy for campaigns and brand storytelling.",
+        sv8_name:"Cinematic Storytelling", sv8_blurb:"Narrative-driven visual content that communicates with emotion, rhythm and cinematic precision.",
+        sw_label:"Software & Tools",
+        ct_label:"Contact", ct_title:"Let's create<br>visually <em>unforgettable</em><br>work.",
+        ct_tagline:"Available for freelance projects, agency collaborations and full-time opportunities. Based in Barcelona, open to remote.",
+        ct_email_lbl:"Email", ct_loc_lbl:"Location", ct_loc_val:"Barcelona, Catalonia, Spain", ct_current_lbl:"Current",
+        f_name:"Name", f_email:"Email", f_company:"Company", f_budget:"Budget", f_sel:"Select range...", f_type:"Project Type", f_sel2:"Select type...",
+        f_opt1:"Video Editing", f_opt2:"Motion Graphics", f_opt3:"Compositing / VFX", f_opt4:"Branded Content", f_opt5:"Social Media Campaign", f_opt6:"AI Creative Workflow", f_opt7:"Creative Direction", f_opt8:"Other",
+        f_msg:"Message", f_send:"Send Message →",
+        ok_title:"Message received.", ok_sub:"I'll be in touch shortly. Let's make something great."
+      },
+      es: {
+        nav_about:"Sobre mí", nav_reels:"Reels", nav_work:"Trabajo", nav_exp:"Experiencia", nav_contact:"Contacto",
+        hero_eyebrow:"Barcelona · España · Disponible para proyectos",
+        hero_desc:"Editor de Vídeo · Motion Designer · Compositor<br>Branded content y storytelling audiovisual a nivel agencia.",
+        hero_btn1:"Ver Reels", hero_btn2:"Contactar",
+        hero_status:"Actualmente en Apple Tree · Barcelona", hero_scroll:"Scroll",
+        about_label:"Sobre mí", about_title:"El oficio<br>detrás del <em>plano</em>",
+        about_badge_role:"Editor de Vídeo · Compositor",
+        about_body:"Soy <strong>Marc Bassols Moutinho</strong>, editor de vídeo y diseñador gráfico especializado en <strong>storytelling audiovisual, motion graphics, compositing y branded content</strong>.<br><br>Con experiencia en el desarrollo de campañas visuales, contenido para redes sociales y flujos de postproducción para agencias y marcas globales — combinando creatividad, edición, diseño y lenguaje cinematográfico en experiencias digitales de alto impacto.<br><br>Formado en <strong>FX Barcelona Film School</strong> en Postproducción y Compositing, con profundo conocimiento de VFX, Nuke y técnicas cinematográficas. Apasionado por el <strong>storytelling visual, la estética moderna y la producción asistida por IA</strong>.",
+        clients_label:"Clientes seleccionados", clients_title:"Marcas con las<br>que he <em>trabajado</em>",
+        clients_note:"Campañas a nivel agencia para marcas globales y nacionales en media, deporte, lifestyle y cultura.",
+        reels_label:"Showreels", reels_title:"Trabajo real.<br><em>Clientes reales.</em>",
+        reel1_title:"Reel de Edición <em>2025</em>",
+        reel1_desc:"Branded content, motion graphics, formatos sociales, corrección de color y edición comercial para agencias y marcas globales.",
+        reel2_title:"Portfolio VFX &amp; <em>Compositing</em>",
+        reel2_desc:"Compositing en Nuke, matte painting, extensiones de set, chroma keying, camera tracking, limpieza y flujos avanzados de postproducción.",
+        proj_label:"Proyectos destacados", proj_title:"Campañas<br><em>seleccionadas</em>",
+        proj1_title:"Pepsi — TikTok Branded", proj1_desc:"Campaña de marca dinámica con edición energética, motion graphics y storytelling social-first para Pepsi España.",
+        proj2_title:"GF Hoteles — Campaña Travel", proj2_desc:"Storytelling de viajes y hospitalidad optimizado para engagement social e identidad de marca.",
+        proj3_title:"Kelme — Branding Deportivo", proj3_desc:"Campaña deportiva de alta energía con edición dinámica y storytelling de producto cinematográfico.",
+        proj4_title:"Museu Picasso — Campaña Cultural", proj4_desc:"Storytelling de museo con dirección artística elegante y ritmo cinematográfico.",
+        proj5_title:"Cocunat — Belleza Premium", proj5_desc:"Branded content de belleza y lifestyle premium con visuales modernos centrados en el producto.",
+        proj6_title:"ICDQ — Campaña Generada por IA", proj6_desc:"Producción experimental asistida por IA combinando flujos de prompting, visuales cinematográficos y postproducción avanzada.",
+        ai_badge:"Creado con IA",
+        exp_label:"Carrera", exp_title:"Experiencia &amp;<br><em>Formación</em>", present:"Presente",
+        exp1_body:"Ideación, producción y postproducción de contenido audiovisual social-first. Desarrollo de campañas para marcas globales, motion graphics y branded storytelling para Instagram, TikTok y YouTube. Flujos creativos asistidos por IA.",
+        exp2_body:"Edición y adaptación de branded content, producción de motion graphics, edición creativa para redes sociales, apoyo en rodajes y flujos de trabajo ágiles a nivel agencia.",
+        exp3_body:"Edición de vídeo corporativo y promocional, motion graphics y assets de marca, producción de vídeo educativo para PayFit Academy y creación de contenido en inglés.",
+        edu1_role:"Máster en Postproducción y Compositing",
+        edu1_body:"Formación intensiva en compositing, VFX, storytelling cinematográfico y postproducción. Foco en Nuke, matte painting, camera tracking y pipelines profesionales.",
+        edu2_role:"Grado Superior en Cinematografía",
+        edu2_body:"Formación profesional en cinematografía, operación de cámara, iluminación y fundamentos de producción audiovisual. Base para una carrera en cine y contenido digital.",
+        sv_label:"Qué hago", sv_title:"Servicios",
+        sv1_name:"Edición de Vídeo", sv1_blurb:"Postproducción cinematográfica para branded content, spots, reels sociales y proyectos narrativos.",
+        sv2_name:"Motion Graphics", sv2_blurb:"Animaciones dinámicas, secuencias de títulos, lower thirds y efectos visuales para broadcast y digital.",
+        sv3_name:"Compositing", sv3_blurb:"VFX avanzado en Nuke — matte painting, extensiones de set, chroma keying, limpieza y tracking.",
+        sv4_name:"Branded Content", sv4_blurb:"Producción de campaña de inicio a fin para marcas — desde el concepto hasta la entrega en todas las plataformas.",
+        sv5_name:"IA Workflows Creativos", sv5_blurb:"Producción híbrida asistida por IA que combina herramientas generativas, flujos de prompting y postproducción.",
+        sv6_name:"Campañas Digitales", sv6_blurb:"Contenido social-first para Instagram, TikTok y YouTube — optimizado para alcance e impacto de marca.",
+        sv7_name:"Dirección Creativa", sv7_blurb:"Desarrollo de concepto visual, moodboarding y estrategia creativa para campañas y brand storytelling.",
+        sv8_name:"Storytelling Cinematográfico", sv8_blurb:"Contenido visual narrativo que comunica con emoción, ritmo y precisión cinematográfica.",
+        sw_label:"Software y Herramientas",
+        ct_label:"Contacto", ct_title:"Creemos algo<br>visualmente <em>inolvidable</em>.",
+        ct_tagline:"Disponible para proyectos freelance, colaboraciones con agencias y posiciones full-time. Basado en Barcelona, abierto a remoto.",
+        ct_email_lbl:"Email", ct_loc_lbl:"Ubicación", ct_loc_val:"Barcelona, Cataluña, España", ct_current_lbl:"Actualmente",
+        f_name:"Nombre", f_email:"Email", f_company:"Empresa", f_budget:"Presupuesto", f_sel:"Seleccionar rango...", f_type:"Tipo de proyecto", f_sel2:"Seleccionar tipo...",
+        f_opt1:"Edición de vídeo", f_opt2:"Motion Graphics", f_opt3:"Compositing / VFX", f_opt4:"Branded Content", f_opt5:"Campaña en redes sociales", f_opt6:"AI Creative Workflow", f_opt7:"Dirección creativa", f_opt8:"Otro",
+        f_msg:"Mensaje", f_send:"Enviar mensaje →",
+        ok_title:"Mensaje recibido.", ok_sub:"Me pondré en contacto pronto. Hagamos algo increíble."
+      }
+    };
+
+    let currentLang = 'en';
+
+    function setLang(lang) {
+      currentLang = lang;
+      const t = T[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      // update lang btn states
+      document.querySelectorAll('.lang-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
+      });
+      document.getElementById('mobLangEn').classList.toggle('active', lang === 'en');
+      document.getElementById('mobLangEs').classList.toggle('active', lang === 'es');
+      document.documentElement.lang = lang;
+    }
+
+    /* ═══════ NAV SCROLL ═══════ */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY > 60));
+
+    /* ═══════ MOBILE NAV ═══════ */
+    document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileNav').classList.add('open'));
+    document.getElementById('mobileClose').addEventListener('click', closeMob);
+    function closeMob() { document.getElementById('mobileNav').classList.remove('open'); }
+
+    /* ═══════ REVEAL ═══════ */
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal, .tl-item').forEach(el => obs.observe(el));
+
+    /* ═══════ FORM ═══════ */
+    function handleSend(e) {
+      e.preventDefault();
+      document.getElementById('cForm').style.display = 'none';
+      document.getElementById('formOk').style.display = 'block';
+    }
+
+    /* ═══════ INIT ═══════ */
+    setLang('en');
+  </script>
+</body>
+</html>
